@@ -246,7 +246,7 @@ fun Main(modifier: Modifier = Modifier) {
                 }
                 Toast.makeText(
                     context,
-                    "Compose 按鈕被點擊了!",
+                    "動物變更",
                     Toast.LENGTH_SHORT
                 ).show()
             }
