@@ -2,6 +2,7 @@ package tw.edu.pu.csim.tcyang.basicui
 
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,13 +18,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -48,20 +55,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun Main(modifier: Modifier = Modifier) {
-
     var Animals = listOf(R.drawable.animal0, R.drawable.animal1,
         R.drawable.animal2, R.drawable.animal3,
         R.drawable.animal4, R.drawable.animal5,
         R.drawable.animal6, R.drawable.animal7,
         R.drawable.animal8, R.drawable.animal9)
-
     var AnimalsName = arrayListOf("鴨子","企鵝",
         "青蛙","貓頭鷹","海豚", "牛", "無尾熊", "獅子", "狐狸", "小雞")
-
-
+    var flag by remember { mutableStateOf("text")}
+    val context = LocalContext.current
     Column (
         modifier = modifier
             .fillMaxSize() // 1. 設定全螢幕（填滿父容器）
@@ -69,22 +73,19 @@ fun Main(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally, // 2. 設定水平置中
         verticalArrangement = Arrangement.Top // 3. 設定垂直靠上
     ) {
-        Text(text = stringResource(R.string.app_title),
+        Text(
+            text = stringResource(R.string.app_title),
             fontSize = 25.sp,
             color = Color.Blue,
             fontFamily = FontFamily(Font(R.font.kai))
-
         )
-
         Spacer(modifier = Modifier.size(10.dp))
-
-        Text(text = stringResource(R.string.app_author),
+        Text(
+            text = stringResource(R.string.app_author),
             fontSize = 20.sp,
             color = Color(0xFF654321)
         )
-
         Spacer(modifier = Modifier.size(10.dp))
-
         Row {
             Image(
                 painter = painterResource(id = R.drawable.android),
@@ -94,24 +95,57 @@ fun Main(modifier: Modifier = Modifier) {
                     .clip(CircleShape)
                     .background(Color.Yellow),
                 alpha = 0.6f,
-                )
-
+            )
             Image(
                 painter = painterResource(id = R.drawable.compose),
                 contentDescription = "Compose icon",
                 modifier = Modifier.size(100.dp)
             )
-
             Image(
                 painter = painterResource(id = R.drawable.firebase),
                 contentDescription = "Firebase icon",
                 modifier = Modifier.size(100.dp)
             )
-
         }
-
         Spacer(modifier = Modifier.size(10.dp))
 
+        Button(
+            onClick = {
+                if (flag == "text") {
+                    flag = "abc"
+                } else {
+                    flag = "text"
+                }
+                Toast.makeText(
+                    context,
+                    "Compose 按鈕被點擊了!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        ){
+            Text(text = "按鈕測試")
+        }
+        Text(text = flag)
+            Row{
+            Button(onClick = {
+            }) {
+                Text(text = "歡迎修課")
+            }
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Button(onClick = {
+            }) {
+                Text(text = "展翅飛翔")
+            }
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Button(onClick = {
+            }) {
+                Text(text = "結束App")
+            }
+        }
         LazyRow {
             items(51) { index ->
                 Text(text = "$index:")
@@ -122,14 +156,7 @@ fun Main(modifier: Modifier = Modifier) {
                     contentDescription = "可愛動物",
                     modifier = Modifier.size(60.dp)
                 )
-
             }
-
-
-
         }
-
-
-
     }
 }
