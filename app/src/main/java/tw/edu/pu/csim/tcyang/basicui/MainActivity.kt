@@ -86,6 +86,7 @@ fun Main(modifier: Modifier = Modifier) {
 
     var mper: MediaPlayer? by remember { mutableStateOf(null) }
 
+    var currentImageIndex by remember{mutableStateOf(0)}
     DisposableEffect(Unit) { // Unit 作為 key 表示這個 effect 只會執行一次
         onDispose {
             // 釋放 MediaPlayer 資源，避免記憶體洩漏
@@ -233,6 +234,26 @@ fun Main(modifier: Modifier = Modifier) {
                     text = "結束App"
                 )
             }
+        }
+        Button(
+            onClick = {
+                currentImageIndex = (currentImageIndex + 1) % Animals.size
+
+                if (flag == "text") {
+                    flag = "abc"
+                } else {
+                    flag = "text"
+                }
+                Toast.makeText(
+                    context,
+                    "Compose 按鈕被點擊了!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        ) {
+            Image(
+                painterResource(id = Animals[currentImageIndex]),
+                contentDescription = "teacher icon")
         }
     }
 }
