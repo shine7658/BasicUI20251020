@@ -31,6 +31,7 @@ import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,13 +74,26 @@ fun Main(modifier: Modifier = Modifier) {
         R.drawable.animal6, R.drawable.animal7,
         R.drawable.animal8, R.drawable.animal9
     )
+
     var AnimalsName = arrayListOf(
         "鴨子", "企鵝",
         "青蛙", "貓頭鷹", "海豚", "牛", "無尾熊", "獅子", "狐狸", "小雞"
     )
+
     var flag by remember { mutableStateOf("text") }
+
     val context = LocalContext.current
+
     var mper: MediaPlayer? by remember { mutableStateOf(null) }
+
+    DisposableEffect(Unit) { // Unit 作為 key 表示這個 effect 只會執行一次
+        onDispose {
+            // 釋放 MediaPlayer 資源，避免記憶體洩漏
+            mper?.release()
+            mper = null
+        }
+    }
+
 
     Column(
         modifier = modifier
@@ -94,13 +108,16 @@ fun Main(modifier: Modifier = Modifier) {
             color = Color.Blue,
             fontFamily = FontFamily(Font(R.font.kai))
         )
+
         Spacer(modifier = Modifier.size(10.dp))
         Text(
             text = stringResource(R.string.app_author),
             fontSize = 20.sp,
             color = Color(0xFF654321)
         )
+
         Spacer(modifier = Modifier.size(10.dp))
+
         Row {
             Image(
                 painter = painterResource(id = R.drawable.android),
@@ -122,6 +139,7 @@ fun Main(modifier: Modifier = Modifier) {
                 modifier = Modifier.size(100.dp)
             )
         }
+
         LazyRow {
             items(51) { index ->
                 Text(text = "$index:")
@@ -134,6 +152,7 @@ fun Main(modifier: Modifier = Modifier) {
                 )
             }
         }
+
         Spacer(modifier = Modifier.size(10.dp))
 
         Button(
