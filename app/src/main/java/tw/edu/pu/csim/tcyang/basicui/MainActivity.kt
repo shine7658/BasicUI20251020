@@ -1,24 +1,33 @@
 package tw.edu.pu.csim.tcyang.basicui
 
 
+import android.app.Activity
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.CheckboxDefaults.colors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,16 +66,22 @@ class MainActivity : ComponentActivity() {
 }
 @Composable
 fun Main(modifier: Modifier = Modifier) {
-    var Animals = listOf(R.drawable.animal0, R.drawable.animal1,
+    var Animals = listOf(
+        R.drawable.animal0, R.drawable.animal1,
         R.drawable.animal2, R.drawable.animal3,
         R.drawable.animal4, R.drawable.animal5,
         R.drawable.animal6, R.drawable.animal7,
-        R.drawable.animal8, R.drawable.animal9)
-    var AnimalsName = arrayListOf("鴨子","企鵝",
-        "青蛙","貓頭鷹","海豚", "牛", "無尾熊", "獅子", "狐狸", "小雞")
-    var flag by remember { mutableStateOf("text")}
+        R.drawable.animal8, R.drawable.animal9
+    )
+    var AnimalsName = arrayListOf(
+        "鴨子", "企鵝",
+        "青蛙", "貓頭鷹", "海豚", "牛", "無尾熊", "獅子", "狐狸", "小雞"
+    )
+    var flag by remember { mutableStateOf("text") }
     val context = LocalContext.current
-    Column (
+    var mper: MediaPlayer? by remember { mutableStateOf(null) }
+
+    Column(
         modifier = modifier
             .fillMaxSize() // 1. 設定全螢幕（填滿父容器）
             .background(Color(0xFFE0BBE4)), // 4. 設定背景為淺紫色
@@ -107,6 +122,18 @@ fun Main(modifier: Modifier = Modifier) {
                 modifier = Modifier.size(100.dp)
             )
         }
+        LazyRow {
+            items(51) { index ->
+                Text(text = "$index:")
+                Text(text = AnimalsName[index % 10])
+
+                Image(
+                    painter = painterResource(id = Animals[index % 10]),
+                    contentDescription = "可愛動物",
+                    modifier = Modifier.size(60.dp)
+                )
+            }
+        }
         Spacer(modifier = Modifier.size(10.dp))
 
         Button(
@@ -122,39 +149,69 @@ fun Main(modifier: Modifier = Modifier) {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        ){
+        ) {
             Text(text = "按鈕測試")
         }
         Text(text = flag)
-            Row{
+
+        Row {
             Button(onClick = {
-            }) {
-                Text(text = "歡迎修課")
-            }
 
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Button(onClick = {
-            }) {
-                Text(text = "展翅飛翔")
-            }
-
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Button(onClick = {
-            }) {
-                Text(text = "結束App")
-            }
-        }
-        LazyRow {
-            items(51) { index ->
-                Text(text = "$index:")
-                Text(text = AnimalsName[index % 10])
-
+                mper = MediaPlayer.create(context, R.raw.tcyang)
+                mper?.start()
+            },
+                modifier = Modifier
+                    .fillMaxWidth(0.33f)
+                    .fillMaxHeight(0.8f),
+                colors = buttonColors(Color.Green)
+            ) {
+                Text(text = "歡迎", color = Color.Blue)
+                Text(text = "修課", color = Color.Red)
                 Image(
-                    painter = painterResource(id = Animals[index % 10]),
-                    contentDescription = "可愛動物",
-                    modifier = Modifier.size(60.dp)
+                    painterResource(id = R.drawable.teacher),
+                    contentDescription = "teacher icon"
+                )
+            }
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Button(
+                onClick = {
+                    mper?.release()  //釋放資源
+                    mper = null // 清除舊引用
+                    mper = MediaPlayer.create(context, R.raw.fly) //設定音樂
+                    mper?.start()
+                },  //開始播放
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(0.4f),
+                colors = buttonColors(Color.Blue)
+            ) {
+                Text(text = "展翅飛翔", color = Color.White)
+                Image(
+                    painterResource(id = R.drawable.fly),
+                    contentDescription = "fly icon"
+                )
+            }
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Button(
+                onClick = {
+                    val activity = context as? Activity
+                    activity?.finish()
+                },
+
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00BFFF)),
+
+                shape = CutCornerShape(10),
+
+                border = BorderStroke(1.dp, Color.Blue),
+
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp)
+            ) {
+                Text(
+                    text = "結束App"
                 )
             }
         }
